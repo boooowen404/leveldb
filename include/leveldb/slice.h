@@ -7,10 +7,13 @@
 // is not used after the corresponding external storage has been
 // deallocated.
 //
+// Slice 是一个简单的结构体，包含了一个指针，该指针指向一些外部存储地址，以及一个size。
+// 必须确保在外部存储被释放之后不再使用使用Slice
 // Multiple threads can invoke const methods on a Slice without
 // external synchronization, but if any of the threads may call a
 // non-const method, all threads accessing the same Slice must use
 // external synchronization.
+// 
 
 #ifndef STORAGE_LEVELDB_INCLUDE_SLICE_H_
 #define STORAGE_LEVELDB_INCLUDE_SLICE_H_
@@ -24,7 +27,7 @@
 
 namespace leveldb {
 
-class LEVELDB_EXPORT Slice {
+class LEVELDB_EXPORT Slice {       //这里的LEVELDB_EXPORT是什么用法？
  public:
   // Create an empty slice.
   Slice() : data_(""), size_(0) {}
@@ -39,7 +42,10 @@ class LEVELDB_EXPORT Slice {
   Slice(const char* s) : data_(s), size_(strlen(s)) {}
 
   // Intentionally copyable.
-  Slice(const Slice&) = default;
+  Slice(const Slice&) = default;                            
+  // C++11 新特性 =default 有更高的代码效率
+  // 不能有默认参数
+  // =delete 禁用该函数
   Slice& operator=(const Slice&) = default;
 
   // Return a pointer to the beginning of the referenced data
