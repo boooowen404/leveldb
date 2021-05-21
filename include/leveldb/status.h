@@ -4,6 +4,7 @@
 //
 // A Status encapsulates the result of an operation.  It may indicate success,
 // or it may indicate an error with an associated error message.
+// Status 存储一次操作的结果，可能显示成功，或者显示失败及失败信息
 //
 // Multiple threads can invoke const methods on a Status without
 // external synchronization, but if any of the threads may call a

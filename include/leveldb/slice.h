@@ -27,7 +27,8 @@
 
 namespace leveldb {
 
-class LEVELDB_EXPORT Slice {       //这里的LEVELDB_EXPORT是什么用法？
+//这里的LEVELDB_EXPORT定义在export.h中
+class LEVELDB_EXPORT Slice {        
  public:
   // Create an empty slice.
   Slice() : data_(""), size_(0) {}
@@ -48,6 +49,9 @@ class LEVELDB_EXPORT Slice {       //这里的LEVELDB_EXPORT是什么用法？
   // =delete 禁用该函数
   Slice& operator=(const Slice&) = default;
 
+  //const char*  返回值只能用来初始化const char*
+  //后面那个const限制了data()不能修改成员变量
+  //const 对象只能调用const成员函数
   // Return a pointer to the beginning of the referenced data
   const char* data() const { return data_; }
 
@@ -70,6 +74,7 @@ class LEVELDB_EXPORT Slice {       //这里的LEVELDB_EXPORT是什么用法？
     size_ = 0;
   }
 
+  //前面的丢弃了？这样不会造成内存泄露吗                                               ？？？？
   // Drop the first "n" bytes from this slice.
   void remove_prefix(size_t n) {
     assert(n <= size());
@@ -86,6 +91,7 @@ class LEVELDB_EXPORT Slice {       //这里的LEVELDB_EXPORT是什么用法？
   //   >  0 iff "*this" >  "b"
   int compare(const Slice& b) const;
 
+  // int memcmp (const void *s1, const void *s2, size_t n)比较 s1, s2前n个字符是否相等
   // Return true iff "x" is a prefix of "*this"
   bool starts_with(const Slice& x) const {
     return ((size_ >= x.size_) && (memcmp(data_, x.data_, x.size_) == 0));
@@ -96,6 +102,9 @@ class LEVELDB_EXPORT Slice {       //这里的LEVELDB_EXPORT是什么用法？
   size_t size_;
 };
 
+//一般类内定义的成员函数默认inline
+//类外定义的成员函数需要显示制定inline
+//类的成员函数一般比较小，没有循环，inline直接替换代码，减少了函数调用的开销
 inline bool operator==(const Slice& x, const Slice& y) {
   return ((x.size() == y.size()) &&
           (memcmp(x.data(), y.data(), x.size()) == 0));
