@@ -25,12 +25,14 @@ namespace leveldb {
 class LEVELDB_EXPORT Status {
  public:
   // Create a success status.
+  //C++11新特性 noexcept告诉编译器该函数不会发生异常，析构函数默认使用
   Status() noexcept : state_(nullptr) {}
   ~Status() { delete[] state_; }
 
   Status(const Status& rhs);
   Status& operator=(const Status& rhs);
 
+  //移动构造函数？
   Status(Status&& rhs) noexcept : state_(rhs.state_) { rhs.state_ = nullptr; }
   Status& operator=(Status&& rhs) noexcept;
 
